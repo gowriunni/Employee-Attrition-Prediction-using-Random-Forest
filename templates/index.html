@@ -1,0 +1,89 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Attrition Intelligence</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <main class="container">
+        <header>
+            <p class="eyebrow">MACHINE LEARNING PROJECT</p>
+            <h1>Employee Attrition Intelligence</h1>
+            <p class="subtitle">
+                Explore employee data using a Random Forest model.
+            </p>
+        </header>
+
+        <section class="card">
+            <h2>Employee Details</h2>
+            <p class="muted">
+                Enter values for all required features.
+            </p>
+
+            <form method="POST">
+                <div class="form-grid">
+                    {% for field in features %}
+                    <label>
+                        {{ field.name }}
+
+                        {% if field.kind == "choice" %}
+                        <select name="{{ field.name }}" required>
+                            {% for option in field.options %}
+                            <option value="{{ option }}"
+                                {% if values[field.name] == option %}
+                                selected
+                                {% endif %}>
+                                {{ option }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                        {% else %}
+                        <input
+                            type="number"
+                            name="{{ field.name }}"
+                            min="{{ field.minimum }}"
+                            max="{{ field.maximum }}"
+                            value="{{ values[field.name] }}"
+                            required>
+                        {% endif %}
+                    </label>
+                    {% endfor %}
+                </div>
+
+                <button type="submit">Predict Attrition</button>
+            </form>
+        </section>
+
+        {% if prediction %}
+        <section class="result">
+            <h2>Prediction Result</h2>
+            <p class="prediction">{{ prediction }}</p>
+            <p>
+                Model-estimated probability of attrition:
+                <strong>{{ probability }}%</strong>
+            </p>
+            <p class="muted">
+                This estimate is for educational purposes.
+                It is not a definitive prediction of an individual's
+                future behavior.
+            </p>
+        </section>
+        {% endif %}
+
+        {% if error %}
+        <section class="result error">
+            <h2>Unable to predict</h2>
+            <p>{{ error }}</p>
+        </section>
+        {% endif %}
+
+        <footer>
+            Built with Python, Flask and Random Forest
+        </footer>
+    </main>
+</body>
+</html>
